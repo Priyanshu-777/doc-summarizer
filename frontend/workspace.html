@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PDF Summarizer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "surface-container-lowest": "#0e0e0e",
+                "on-error": "#690005",
+                "tertiary-fixed-dim": "#c8c6c5",
+                "surface-container-highest": "#353534",
+                "on-tertiary-fixed-variant": "#474746",
+                "primary": "#ff5200",
+                "error": "#ffb4ab",
+                "outline-variant": "#333333",
+                "on-secondary-fixed": "#1a1c1c",
+                "surface-container": "#201f1f",
+                "inverse-on-surface": "#313030",
+                "on-surface": "#e5e2e1",
+                "on-secondary-fixed-variant": "#454747",
+                "primary-fixed-dim": "#ffb59d",
+                "on-primary-fixed-variant": "#832600",
+                "tertiary-container": "#929090",
+                "surface-bright": "#3a3939",
+                "on-secondary": "#2f3131",
+                "inverse-primary": "#ac3500",
+                "tertiary": "#c8c6c5",
+                "secondary-container": "#454747",
+                "surface": "#131313",
+                "tertiary-fixed": "#e5e2e1",
+                "surface-dim": "#131313",
+                "primary-fixed": "#ffdbd0",
+                "on-tertiary-container": "#2a2a2a",
+                "surface-container-high": "#2a2a2a",
+                "on-secondary-container": "#b4b5b5",
+                "error-container": "#93000a",
+                "secondary": "#c6c6c7",
+                "on-tertiary-fixed": "#1c1b1b",
+                "secondary-fixed-dim": "#c6c6c7",
+                "secondary-fixed": "#e2e2e2",
+                "on-primary-fixed": "#390c00",
+                "on-tertiary": "#313030",
+                "surface-tint": "#ff5200",
+                "surface-container-low": "#1c1b1b",
+                "outline": "#4a4a4a",
+                "on-primary-container": "#ffdbd0",
+                "on-background": "#e5e2e1",
+                "background": "#131313",
+                "surface-variant": "#353534",
+                "on-primary": "#5d1800",
+                "on-error-container": "#ffdad6",
+                "inverse-surface": "#e5e2e1",
+                "primary-container": "#ff5200",
+                "on-surface-variant": "#a3a3a3",
+                "input-bg": "#0e0e0e"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+        },
+        "spacing": {
+                "gutter": "24px",
+                "container-max": "1200px",
+                "margin-desktop": "40px",
+                "margin-mobile": "16px",
+                "unit": "4px"
+        },
+        "fontFamily": {
+                "headline-lg": [
+                        "Geist"
+                ],
+                "body-lg": [
+                        "Geist"
+                ],
+                "body-md": [
+                        "Geist"
+                ],
+                "label-caps": [
+                        "JetBrains Mono"
+                ],
+                "headline-md": [
+                        "Geist"
+                ],
+                "code-sm": [
+                        "JetBrains Mono"
+                ],
+                "headline-lg-mobile": [
+                        "Geist"
+                ]
+        },
+        "fontSize": {
+                "headline-lg": [
+                        "40px",
+                        {
+                                "lineHeight": "1.2",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "1.6",
+                                "fontWeight": "400"
+                        }
+                ],
+                "body-md": [
+                        "15px",
+                        {
+                                "lineHeight": "1.6",
+                                "fontWeight": "400"
+                        }
+                ],
+                "label-caps": [
+                        "12px",
+                        {
+                                "lineHeight": "1.2",
+                                "letterSpacing": "0.1em",
+                                "fontWeight": "500"
+                        }
+                ],
+                "headline-md": [
+                        "24px",
+                        {
+                                "lineHeight": "1.4",
+                                "fontWeight": "500"
+                        }
+                ],
+                "code-sm": [
+                        "13px",
+                        {
+                                "lineHeight": "1.5",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "28px",
+                        {
+                                "lineHeight": "1.2",
+                                "fontWeight": "600"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-surface');
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .primary-glow:hover {
+            box-shadow: 0 0 15px rgba(255, 82, 0, 0.4);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .interactive-glow:hover {
+            position: relative;
+        }
+        
+        .interactive-glow:hover::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            background: radial-gradient(circle at center, rgba(255, 82, 0, 0.15) 0%, transparent 70%);
+            z-index: -1;
+            border-radius: inherit;
+        }
+
+        /* Custom Scrollbar for Sidebar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: theme('colors.outline-variant');
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.surface-container-highest');
+        }
+        
+        /* Radio Button Styling */
+        input[type="radio"]:checked {
+            background-color: theme('colors.primary');
+            border-color: theme('colors.primary');
+        }
+        input[type="radio"]:focus {
+            --tw-ring-color: theme('colors.primary');
+            --tw-ring-offset-color: theme('colors.background');
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-body-md text-body-md overflow-x-hidden bg-background">
+<!-- Top Navigation (Features as active based on intent context, or default to generic styling if not applicable. Since it's a tool dashboard, we'll keep both inactive for focus) -->
+<header class="bg-surface-container-lowest border-b border-outline-variant w-full top-0 z-50">
+<div class="flex items-center h-16 px-6 w-full">
+<!-- Brand -->
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[28px] text-primary">document_scanner</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface tracking-tight">Doc Summarizer</span>
+</div>
+</div>
+</header>
+<!-- Main Layout -->
+<div class="flex flex-1 overflow-hidden relative">
+<!-- Left Sidebar (Upload & Settings) -->
+<aside class="w-[320px] bg-surface-container border-r border-outline-variant flex-shrink-0 flex flex-col custom-scrollbar overflow-y-auto hidden lg:flex z-10">
+<div class="p-6 flex flex-col gap-8">
+<!-- Upload Section -->
+<section>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-4">Upload PDF</h2>
+<div class="flex items-center justify-between mb-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Choose a PDF file</label>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant cursor-help" title="Help">help</span>
+</div>
+<!-- Drag & Drop Area -->
+<div id="drop-zone" class="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 flex flex-col items-center justify-center text-center gap-3 mb-4 interactive-glow cursor-pointer transition-colors hover:border-surface-container-highest">
+<span class="font-body-md text-on-surface">Drag and drop file here</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">Limit 200MB per file • PDF</span>
+<button onclick="document.getElementById('file-input').click()" class="mt-2 bg-transparent border border-outline-variant text-on-surface px-4 py-1.5 rounded-DEFAULT font-label-caps text-label-caps hover:border-on-surface hover:text-on-surface transition-colors">Browse files</button>
+<input type="file" id="file-input" accept=".pdf" class="hidden" />
+</div>
+<!-- Uploaded File Item -->
+<div id="file-info-container" class="hidden bg-surface-container-low border border-outline-variant rounded-lg p-4 flex flex-col gap-2 relative">
+<button id="remove-file-btn" class="absolute top-3 right-3 text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-on-surface-variant mt-1">description</span>
+<div class="flex flex-col pr-6">
+<span id="filename-display" class="font-body-md text-on-surface font-medium w-48 break-words"></span>
+<span id="filesize-display" class="font-label-caps text-label-caps text-on-surface-variant"></span>
+</div>
+</div>
+<div class="mt-2 pt-2 border-t border-outline-variant flex flex-col gap-1">
+<div class="flex items-center gap-2 text-on-surface-variant font-label-caps text-label-caps">
+<span class="material-symbols-outlined text-[14px]">attachment</span>
+<span id="filename-full" class="break-all"></span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant font-label-caps text-label-caps">
+<span class="material-symbols-outlined text-[14px]">database</span>
+<span id="filesize-full"></span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant font-label-caps text-label-caps">
+<span class="material-symbols-outlined text-[14px]">folder</span>
+<span>Type: PDF Document</span>
+</div>
+</div>
+</div>
+</section>
+<hr class="border-outline-variant"/>
+<!-- Settings Section -->
+<section>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-4">Summary Settings</h2>
+<div class="flex items-center gap-2 mb-3">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Summary Length</label>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant cursor-help">help</span>
+</div>
+<div class="flex flex-col gap-3">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="form-radio h-4 w-4 bg-transparent border-outline-variant text-primary focus:ring-primary focus:ring-offset-background" name="summary_length" type="radio" value="short"/>
+<span class="font-body-md text-on-surface-variant group-hover:text-on-surface transition-colors">Short</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="form-radio h-4 w-4 bg-transparent border-outline-variant text-primary focus:ring-primary focus:ring-offset-background" name="summary_length" type="radio" value="medium"/>
+<span class="font-body-md text-on-surface group-hover:text-on-surface transition-colors">Medium</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="form-radio h-4 w-4 bg-transparent border-outline-variant text-primary focus:ring-primary focus:ring-offset-background" name="summary_length" type="radio" value="long"/>
+<span class="font-body-md text-on-surface-variant group-hover:text-on-surface transition-colors">Long</span>
+</label>
+</div>
+</section>
+<div class="mt-auto pt-8">
+<button id="generate-btn" class="w-full bg-primary text-white py-3 rounded-DEFAULT font-label-caps text-label-caps primary-glow transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+    Generate Summary
+</button>
+</div>
+</div>
+</aside>
+<!-- Main Workspace Canvas -->
+<main class="flex-1 relative overflow-y-auto custom-scrollbar bg-background">
+<div class="p-margin-mobile md:p-margin-desktop max-w-container-max mx-auto flex flex-col gap-8 min-h-full">
+<!-- Workspace Header -->
+<header class="flex flex-col gap-2">
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">AI PDF Summarizer</h1>
+<p class="font-body-md text-on-surface-variant max-w-2xl">Upload a PDF and get an extractive summary powered by TF-IDF — no LLMs, just classic NLP.</p>
+</header>
+<!-- Tabs -->
+<div class="flex items-center border-b border-outline-variant gap-8 overflow-x-auto custom-scrollbar">
+<button id="tab-btn-summary" class="tab-btn active font-label-caps text-label-caps text-primary border-b-2 border-primary pb-3 flex items-center gap-2 whitespace-nowrap">
+<span class="material-symbols-outlined text-[18px]">article</span>
+                        SUMMARY
+                    </button>
+<button id="tab-btn-statistics" class="tab-btn font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface pb-3 border-b-2 border-transparent hover:border-outline-variant transition-all flex items-center gap-2 whitespace-nowrap">
+<span class="material-symbols-outlined text-[18px]">bar_chart</span>
+                        STATISTICS
+                    </button>
+<button id="tab-btn-extracted" class="tab-btn font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface pb-3 border-b-2 border-transparent hover:border-outline-variant transition-all flex items-center gap-2 whitespace-nowrap">
+<span class="material-symbols-outlined text-[18px]">subject</span>
+                        EXTRACTED TEXT
+                    </button>
+</div>
+<!-- Content Area -->
+<div id="results-area" class="hidden flex-col gap-8 pb-12 w-full">
+
+    <!-- SUMMARY TAB CONTENT -->
+    <div id="content-summary" class="tab-content flex flex-col gap-8 w-full">
+        <div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[28px] text-primary">assignment</span>
+<h2 class="font-headline-md text-headline-md text-on-surface font-semibold">Generated Summary</h2>
+</div>
+<!-- Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-surface-container border border-outline-variant rounded-lg p-6 flex flex-col items-center justify-center gap-2 text-center">
+<span id="stat-original" class="font-headline-lg text-headline-lg text-on-surface">-</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">ORIGINAL WORDS</span>
+</div>
+<div class="bg-surface-container border border-outline-variant rounded-lg p-6 flex flex-col items-center justify-center gap-2 text-center">
+<span id="stat-summary" class="font-headline-lg text-headline-lg text-on-surface">-</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">SUMMARY WORDS</span>
+</div>
+<div class="bg-surface-container border border-outline-variant rounded-lg p-6 flex flex-col items-center justify-center gap-2 text-center">
+<span id="stat-compression" class="font-headline-lg text-headline-lg text-on-surface">-</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">COMPRESSION</span>
+</div>
+</div>
+<!-- Summary Text Content -->
+<div id="summary-content" class="prose prose-invert max-w-none font-body-lg text-body-lg text-on-surface leading-relaxed flex flex-col gap-6">
+</div>
+    </div> <!-- End summary content -->
+
+    <!-- STATISTICS TAB CONTENT -->
+    <div id="content-statistics" class="tab-content hidden flex-col gap-8 w-full">
+        
+        <!-- Top 4 Stat Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="bg-surface-container border border-outline-variant rounded-lg p-6 flex flex-col items-center justify-center gap-2 text-center">
+                <span id="stat-ext-pages-top" class="font-headline-lg text-headline-lg text-on-surface">-</span>
+                <span class="font-label-caps text-label-caps text-on-surface-variant">PAGES</span>
+            </div>
+            <div class="bg-surface-container border border-outline-variant rounded-lg p-6 flex flex-col items-center justify-center gap-2 text-center">
+                <span id="stat-ext-orig-words-top" class="font-headline-lg text-headline-lg text-on-surface">-</span>
+                <span class="font-label-caps text-label-caps text-on-surface-variant">TOTAL WORDS</span>
+            </div>
+            <div class="bg-surface-container border border-outline-variant rounded-lg p-6 flex flex-col items-center justify-center gap-2 text-center">
+                <span id="stat-ext-orig-sent-top" class="font-headline-lg text-headline-lg text-on-surface">-</span>
+                <span class="font-label-caps text-label-caps text-on-surface-variant">TOTAL SENTENCES</span>
+            </div>
+            <div class="bg-surface-container border border-outline-variant rounded-lg p-6 flex flex-col items-center justify-center gap-2 text-center">
+                <span id="stat-ext-comp-top" class="font-headline-lg text-headline-lg text-primary">-</span>
+                <span class="font-label-caps text-label-caps text-on-surface-variant">COMPRESSION</span>
+            </div>
+        </div>
+
+        <hr class="border-outline-variant">
+
+        <h3 class="font-headline-md text-headline-md text-on-surface font-semibold mb-2">Original vs Summary Comparison</h3>
+        
+        <!-- Side by Side Comparison -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Original Card -->
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="material-symbols-outlined text-[24px] text-on-surface-variant">description</span>
+                    <h3 class="font-headline-md text-headline-md text-on-surface font-medium">Original Document</h3>
+                </div>
+                <div class="flex flex-col gap-4 font-body-lg text-on-surface-variant">
+                    <p><strong id="stat-comp-orig-words" class="text-primary font-bold">-</strong> words</p>
+                    <p><strong id="stat-comp-orig-sent" class="text-primary font-bold">-</strong> sentences</p>
+                    <p><strong id="stat-comp-orig-pages" class="text-primary font-bold">-</strong> pages</p>
+                </div>
+            </div>
+
+            <!-- Summary Card -->
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="material-symbols-outlined text-[24px] text-primary">assignment</span>
+                    <h3 class="font-headline-md text-headline-md text-on-surface font-medium">Generated Summary</h3>
+                </div>
+                <div class="flex flex-col gap-4 font-body-lg text-on-surface-variant">
+                    <p><strong id="stat-comp-sum-words" class="text-primary font-bold">-</strong> words</p>
+                    <p><strong id="stat-comp-sum-sent" class="text-primary font-bold">-</strong> sentences</p>
+                    <p><strong id="stat-comp-comp" class="text-primary font-bold">-</strong> compressed</p>
+                </div>
+            </div>
+        </div>
+        
+    </div> <!-- End statistics content -->
+
+    <!-- EXTRACTED TEXT TAB CONTENT -->
+    <div id="content-extracted" class="tab-content hidden flex-col gap-6 w-full">
+        <div class="flex items-center justify-between mb-2">
+            <h2 class="font-headline-md text-headline-md text-on-surface font-semibold">Raw Extracted Text</h2>
+            <button id="download-raw-btn" class="flex items-center gap-2 bg-surface-container border border-outline-variant hover:border-primary text-on-surface px-4 py-2 rounded transition-colors duration-200 group">
+                <span class="material-symbols-outlined text-[18px] text-on-surface-variant group-hover:text-primary transition-colors">download</span>
+                <span class="font-label-caps text-label-caps">DOWNLOAD RAW</span>
+            </button>
+        </div>
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 max-h-[600px] overflow-y-auto custom-scrollbar">
+            <pre id="raw-extracted-text" class="font-code-sm text-code-sm text-on-surface whitespace-pre-wrap leading-relaxed">-</pre>
+        </div>
+    </div> <!-- End extracted text content -->
+
+</div>
+
+<!-- Initial State View -->
+<div id="empty-state" class="flex flex-col items-center justify-center pt-20 pb-12 text-center">
+    <span class="material-symbols-outlined text-6xl text-on-surface-variant opacity-50 mb-4">description</span>
+    <h3 class="font-headline-md text-headline-md text-on-surface mb-2">Ready to Summarize</h3>
+    <p class="text-on-surface-variant max-w-md">Upload a PDF document from the sidebar and click Generate Summary to extract key insights.</p>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const fileInput = document.getElementById("file-input");
+        const dropZone = document.getElementById("drop-zone");
+        const fileInfoContainer = document.getElementById("file-info-container");
+        const removeFileBtn = document.getElementById("remove-file-btn");
+        const generateBtn = document.getElementById("generate-btn");
+        
+        const resultsArea = document.getElementById("results-area");
+        const emptyState = document.getElementById("empty-state");
+        const summaryContent = document.getElementById("summary-content");
+        
+        let selectedFile = null;
+
+        // --- Drag and Drop Logic ---
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-primary');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('border-primary');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-primary');
+            if (e.dataTransfer.files.length > 0) {
+                handleFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        removeFileBtn.addEventListener('click', () => {
+            selectedFile = null;
+            fileInput.value = "";
+            fileInfoContainer.classList.add('hidden');
+            dropZone.classList.remove('hidden');
+        });
+
+        function handleFile(file) {
+            if (file.type !== "application/pdf") {
+                alert("Please upload a valid PDF file.");
+                return;
+            }
+            selectedFile = file;
+            
+            // Update UI
+            document.getElementById("filename-display").textContent = file.name;
+            document.getElementById("filename-full").textContent = file.name;
+            document.getElementById("filesize-display").textContent = (file.size / 1024).toFixed(1) + " KB";
+            document.getElementById("filesize-full").textContent = "Size: " + (file.size / 1024).toFixed(1) + " KB";
+            
+            dropZone.classList.add('hidden');
+            fileInfoContainer.classList.remove('hidden');
+            fileInfoContainer.classList.add('flex');
+        }
+
+        // --- Generate Summary Logic ---
+        generateBtn.addEventListener('click', async () => {
+            if (!selectedFile) {
+                alert("Please upload a PDF file first.");
+                return;
+            }
+
+            // Get selected radio value
+            const lengthRadios = document.getElementsByName('summary_length');
+            let summaryLength = 'medium';
+            for (let radio of lengthRadios) {
+                if (radio.checked) {
+                    summaryLength = radio.value;
+                    break;
+                }
+            }
+
+            // Update UI to loading state
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[20px]">progress_activity</span> Processing...';
+            
+            // Prepare form data
+            const formData = new FormData();
+            formData.append("file", selectedFile);
+            formData.append("summary_length", summaryLength);
+
+            try {
+                const response = await fetch('/api/summarize', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    // Update stats
+                    document.getElementById('stat-original').textContent = data.stats.original_words;
+                    document.getElementById('stat-summary').textContent = data.stats.summary_words;
+                    document.getElementById('stat-compression').textContent = data.stats.compression_ratio + "%";
+                    
+                    // Update summary HTML (handling our custom markdown-to-html approach in server.py)
+                    summaryContent.innerHTML = data.summary;
+                    
+                    // Show results, hide empty state
+                    emptyState.classList.add('hidden');
+                    resultsArea.classList.remove('hidden');
+                    resultsArea.classList.add('flex');
+                    
+                    // Populate detailed stats tab
+                    document.getElementById('stat-ext-pages-top').textContent = data.stats.num_pages;
+                    document.getElementById('stat-ext-orig-words-top').textContent = data.stats.original_words;
+                    document.getElementById('stat-ext-orig-sent-top').textContent = data.stats.original_sentences;
+                    document.getElementById('stat-ext-comp-top').textContent = data.stats.compression_ratio + "%";
+
+                    document.getElementById('stat-comp-orig-words').textContent = data.stats.original_words;
+                    document.getElementById('stat-comp-orig-sent').textContent = data.stats.original_sentences;
+                    document.getElementById('stat-comp-orig-pages').textContent = data.stats.num_pages;
+
+                    document.getElementById('stat-comp-sum-words').textContent = data.stats.summary_words;
+                    document.getElementById('stat-comp-sum-sent').textContent = data.stats.summary_sentences;
+                    document.getElementById('stat-comp-comp').textContent = data.stats.compression_ratio + "%";
+                    
+                    // Populate raw extracted text
+                    document.getElementById('raw-extracted-text').textContent = data.extracted_text;
+                    
+                    // Attach raw text to a global variable or data attribute for downloading
+                    window.currentRawText = data.extracted_text;
+
+                } else {
+                    alert(data.error || "An error occurred during summarization.");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Failed to connect to the server. Please try again.");
+            } finally {
+                // Reset button
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = 'Generate Summary';
+            }
+        });
+        
+        // --- Tab Switching Logic ---
+        const tabs = [
+            { btn: document.getElementById('tab-btn-summary'), content: document.getElementById('content-summary') },
+            { btn: document.getElementById('tab-btn-statistics'), content: document.getElementById('content-statistics') },
+            { btn: document.getElementById('tab-btn-extracted'), content: document.getElementById('content-extracted') }
+        ];
+        
+        tabs.forEach(tab => {
+            tab.btn.addEventListener('click', () => {
+                // Remove active classes from all buttons
+                tabs.forEach(t => {
+                    t.btn.classList.remove('text-primary', 'border-primary');
+                    t.btn.classList.add('text-on-surface-variant', 'border-transparent');
+                    t.content.classList.add('hidden');
+                    t.content.classList.remove('flex');
+                });
+                
+                // Add active class to clicked button
+                tab.btn.classList.remove('text-on-surface-variant', 'border-transparent');
+                tab.btn.classList.add('text-primary', 'border-primary');
+                
+                // Show corresponding content
+                tab.content.classList.remove('hidden');
+                tab.content.classList.add('flex');
+            });
+        });
+        
+        // --- Download Raw Text Logic ---
+        const downloadRawBtn = document.getElementById('download-raw-btn');
+        downloadRawBtn.addEventListener('click', () => {
+            if (!window.currentRawText) {
+                alert("No extracted text available to download.");
+                return;
+            }
+            const blob = new Blob([window.currentRawText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = (selectedFile ? selectedFile.name.replace('.pdf', '') : 'document') + '_raw_text.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+    });
+</script>
+</body></html>
