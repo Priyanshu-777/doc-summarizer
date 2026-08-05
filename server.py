@@ -8,7 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from src.pdf_extractor import extract_text_from_pdf
 from src.preprocessing  import tokenize_sentences, preprocess_sentence, download_nltk_data
 from src.summarizer import score_sentences, generate_summary
-from src.utils  import compute_statistics
+from src.other  import compute_statistics
 
 # Ensure NLTK datasets are downloaded
 download_nltk_data()
@@ -17,7 +17,7 @@ download_nltk_data()
 app = FastAPI(title="AI PDF Summarizer Backend")
 
 # setup templates
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="frontend")
 
 
 
