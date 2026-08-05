@@ -1,0 +1,10 @@
+streamlit
+pypdf
+nltk
+scikit-learn
+
+
+fastapi
+uvicorn
+python-multipart
+jinja2
