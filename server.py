@@ -16,20 +16,25 @@ download_nltk_data()
 
 app = FastAPI(title="AI PDF Summarizer Backend")
 
+# Setup absolute paths
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+frontend_dir = os.path.join(BASE_DIR, "frontend")
+static_dir = os.path.join(BASE_DIR, "static")
+
 # setup templates
-templates = Jinja2Templates(directory="frontend")
+templates = Jinja2Templates(directory=frontend_dir)
 
 
 
 #make sure we have a static folder even if empty
-if not os.path.exists("static"):
-    os.makedirs("static")
-app.mount("/static", StaticFiles(directory="static"), name="static")
+if not os.path.exists(static_dir):
+    os.makedirs(static_dir)
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 @app.get("/", response_class=HTMLResponse)
 async def serve_landing_page(request: Request):
     """Serves the main workspace page (workspace.html)."""
-    return templates.TemplateResponse("workspace.html", {"request": request})
+    return templates.TemplateResponse(request=request, name="workspace.html")
 
 
 @app.post("/api/summarize")
